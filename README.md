@@ -1,34 +1,38 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# pscale DB 생성
 
-## Getting Started
+- pscale database carrot-market --region ap-northeast
 
-First, run the development server:
+# pscale 명령어
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+- pscale auth login
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# prisma 와 pscale 연동 
+# pscale connect carrot-market
+- 따로 url, dbname, id, pw 등을 할 필요 없음
+- pscale connect carrot-market 하면 바로 127.0.0.1:3306 으로 서버 실행됌
+- env => DATABASE_URL="mysql://127.0.0.1:3306/carrot-market"
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+# referentialIntegrity = "prisma" 설정 필요
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+- Vitess 는 foreign key constraint 를 지원하지 않기 때문에 없는 유저로 커멘트 생성해도 에러가 발생하지 않음
+- referentialIntegrity = "prisma" 설정을 해주면 에러 발생시켜준다
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+# prisma 푸시
 
-## Learn More
+- npx prisma db push
 
-To learn more about Next.js, take a look at the following resources:
+# prisma 관리자 패널
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- npx prisma studio
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+# npx prisma generate
 
-## Deploy on Vercel
+- node_modules/@prisma/client/index.d.ts/User 내가만든 스키마 생성됌
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+# Twilio (임시 번호로 문자 보내기)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- 15달러 무료 사용가능
+- gkb10a@gmail.com
+- n---!!
+- messaging > Services > create
+- messaging > try it out > phone 생성 (한달에 1달러)
