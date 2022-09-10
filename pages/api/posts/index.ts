@@ -25,6 +25,13 @@ async function handler(
         },
       },
     });
+    /*
+    ### On-Demand Revalidation
+    - 특정 페이지의 getStaticProps를 동작 시킬 수 있다.
+    - 즉 글이 작성됐을때 새로운 html 파일을 생성하여 동적으로 만들어준다.
+    */
+
+    await res.revalidate("/community");
     res.json({
       ok: true,
       post,

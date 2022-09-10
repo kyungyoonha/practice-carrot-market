@@ -1,11 +1,24 @@
 import type { NextPage } from "next";
-import { useState, useEffect, useInsertionEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Button from "@components/button";
 import Input from "@components/input";
 import useMutation from "@libs/client/useMutation";
 import { cls } from "@libs/client/utils";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
+import dynamic from "next/dynamic";
+
+/*
+### NEXT JS: Dynamic Import 사용하는 이유
+- 페이지를 불러올때 모든 컴포넌트를 다 불러올 필요가 없는 경우
+- 동적으로 컴포넌트를 추가하고 싶은 경우
+- 다 만들고 최적화 할 때 사용하면 됌
+*/
+
+const DynamicImportComponent = dynamic(
+  () => import("@components/dynamic-import"),
+  { ssr: false, suspense: true, loading: () => <span>loading</span> }
+);
 
 interface EnterForm {
   email?: string;
@@ -21,6 +34,7 @@ interface MutationResult {
 }
 
 const Enter: NextPage = () => {
+  const [show, setShow] = useState(false);
   const [enter, { loading, data, error }] =
     useMutation<MutationResult>("/api/users/enter");
   const [confirmToken, { loading: tokenLoading, data: tokenData }] =
@@ -46,16 +60,27 @@ const Enter: NextPage = () => {
     confirmToken(validForm);
   };
   const router = useRouter();
-  useEffect(()=>{
-    if(tokenData?.ok){
-      router.push('/');
+  useEffect(() => {
+    if (tokenData?.ok) {
+      router.push("/");
     }
-  },[tokenData, router])
-  
+  }, [tokenData, router]);
+
   return (
     <div className="mt-16 px-4">
       <h3 className="text-3xl font-bold text-center">Enter to Carrot</h3>
       <div className="mt-12">
+        {show && (
+          <Suspense fallback={<button>loading!!</button>}>
+            <DynamicImportComponent />
+          </Suspense>
+        )}
+        <button
+          className="border-orange-500 border-2 p-10"
+          onClick={() => setShow(!show)}
+        >
+          Dynamic Import {show ? " 숨기기" : " 보이기"}
+        </button>
         {data?.ok ? (
           <form
             onSubmit={tokenHandleSubmit(onTokenValid)}

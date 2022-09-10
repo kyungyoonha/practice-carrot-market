@@ -65,7 +65,7 @@ async function handler(
     //   .then((result: any) => console.log(result))
     //   .catch((err: any) => console.log(err));
   }
-
+  console.log({ token: payload });
   return res.json({
     ok: true,
   });

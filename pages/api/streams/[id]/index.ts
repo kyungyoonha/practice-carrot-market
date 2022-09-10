@@ -9,6 +9,7 @@ async function handler(
 ) {
   const {
     query: { id },
+    session: { user },
   } = req;
   const stream = await client.stream.findUnique({
     where: {
@@ -29,6 +30,12 @@ async function handler(
       },
     },
   });
+  // Network탭에서 볼수 있으므로 주의, 변경해줘야한다.
+  const isOwner = stream?.userId === user?.id;
+  if (stream && !isOwner) {
+    stream.cloudflareKey = "xxxxx";
+    stream.cloudflareUrl = "xxxxx";
+  }
   res.json({ ok: true, stream });
 }
 

@@ -67,7 +67,7 @@
 
 ### CloudFlare Images 제일 큰 장점
 
-- 100,000개당 5달러
+- 100,000개당 5달러 / 월
 - 100,000 호출시 1달러
 - no egress cost
   - Bandwidth 요금 없음 (대역폭에 비용을 청구하지 않음)
@@ -80,3 +80,79 @@
   - File(Browser) ----> Our Server ----> CloudFlare (x)
     - 서버를 거치면 Bandwidth 요금을 내야한다
     - 이미지가 크면 코스트가 비쌈
+
+### NEXT JS: \_document.tsx 와 \_app.tsx 차이
+
+- \_app.tsx는 유저가 페이지를 불러올때마다 브라우저에서 실행됌
+
+### NEXT JS + 구글 폰트 사용해야하는 이유?
+
+- 구글 폰트로 설정하면 빌드할때 .next 파일안에 다 다운받아서 static으로 만들어준다.
+- 유저가 페이지 열때 다시 폰트를 다운 받을 필요 없음
+- 로딩 굉장히 빨라진다.
+- .next/server/pages/index.html 보면 폰트가 다 들어가져있음
+
+### Script strategory = beforeInteractive | afterInteractive | lazyOnload
+
+- beforeInteractive 로딩 되기전에 다 불러움
+  - 느림
+- faterInteractive 로딩 되고나서 불러옴
+  - default 값임
+  - 대부분에 <Script> 로 불러오는 것들은 beforeInteractive할 필요 없음
+  - 페이지가 뜨고나서 스크립트를 불러오면 된다.
+  - 따라서 보통 이걸 많이 씀
+- lazyOnload
+  - 다른 모든 데이터와 소스들을 전부다 불러오고 나서 스크립트 불러옴
+  - 최후의 호출
+  - 별로 중요하지 않은 기능들은 나중에 불러올때
+
+### SSR + SWR 콤보 (getServerSideProps)
+
+- swr에 캐시데이터를 미리 보낼 수 있음
+- 처음 시작부터 캐시 데이터를 가진다.
+- 다른페이지 갔다와도 api따로 요청할 필요없음
+- fallback 에다가 key를 주면된다.
+- 처음에 뜰때 한번에 모든 데이터가 다보임
+- Loading 이 없어진다.
+- 단점
+  - 데이터를 받아오는데 5초가 걸리다면 5초동안 아무것도 안뜸
+
+### iron-session 역할
+
+- 쿠키를 가져와서 파스하고 그안에 데이터를 req안에 넣어준다.
+- req.session.user안에 넣어줌
+
+### Next JS: getStaticProps
+
+- 빌드 될때 한번만 생성
+- 데이터 호출을 따로 할 필요 없는 경우 사용
+- 블로그 처럼 데이터가 변하지 않는 경우에 사용
+- revalidate: 20,
+  - 유저가 방문하고 20초 안에 다른 유저가 들어오면 같은 데이터 보임
+  - 유저가 방문하고 20초 이후에 다른 유저가 들어오면 getStaticProps()가 한번 돌아가서 html다시 빌드함
+  - 다른 데이터를 볼 수 있음
+  - 데이터가 많이 바뀌지 않은 경우에 사용하면 좋다.
+    - 니코사이트처럼 강의는 매번 올라가지 않음
+    - 빌드를 계속 해줄 필요가 없음 일정 시간 지나면 새로 빌드해서 파일 만들어주므로 좋다.
+
+### NEXT JS: Dynamic Import 사용하는 이유
+
+- 페이지를 불러올때 모든 컴포넌트를 다 불러올 필요가 없는 경우
+- 동적으로 컴포넌트를 추가하고 싶은 경우
+- 다 만들고 최적화 할 때 사용하면 됌
+
+### Plenetscale
+
+- main을 production 브런치로 지정하면 다이렉트로 npx prisma db push 사용할 수 없음
+- 실제 유저가 사용하므로 다이렉트로 변경되면 안됌
+- 다른 브랜치를 만들어서 merge해줘야한다
+- planetscale에서 (indexes) 브랜치 생성
+  - 기존 연결 제거
+  - pscale connect carrot-market indexes
+
+### planetscale @@index([]) 생성해주는이유?
+
+- mysql은 관계를 만들때 자동으로 인덱스를 생성해서 검색하는 속도가 매우 빠름
+- planetscale은 인덱스를 생성하지 않으므로 모든 디비에서 처음부터 순서대로 찾음
+- 인덱스가 있으면, 사전에서 알파벳순으로 들어가서 찾듯이 쉽게 찾을 수 있음
+- @@index([관계id])
