@@ -149,10 +149,20 @@
 - planetscale에서 (indexes) 브랜치 생성
   - 기존 연결 제거
   - pscale connect carrot-market indexes
+  - 변경 후 푸쉬
+  - npx prisma db push
+  - 홈피에서 브랜치 머지
+  - 홈피에서 브랜치 삭제
+- 보통
+  - main을 production 브랜치로 드고
+  - dev 하나 만들어서 수정후 머지 (dev는 걔속 유지)
+  - dev는 테스트 데이터 계속 유지
+  - 브린치 새로만들면 스키마만 있고 데이터는 없다
 
 ### planetscale @@index([]) 생성해주는이유?
 
 - mysql은 관계를 만들때 자동으로 인덱스를 생성해서 검색하는 속도가 매우 빠름
 - planetscale은 인덱스를 생성하지 않으므로 모든 디비에서 처음부터 순서대로 찾음
 - 인덱스가 있으면, 사전에서 알파벳순으로 들어가서 찾듯이 쉽게 찾을 수 있음
+- 특히나 planetscale은 데이터를 읽는거에 과금이므로 더 조심
 - @@index([관계id])
